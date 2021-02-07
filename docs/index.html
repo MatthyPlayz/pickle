@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+        window.languagePluginUrl = 'https://cdn.jsdelivr.net/pyodide/v0.16.1/full/';
+    </script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.16.1/full/pyodide.js"></script>
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet"> 
+		<style>
+		body {
+			height: 200px;
+			background-color: #1c1938;
+			font-family: 'Noto Sans JP', sans-serif;
+			color: white;
+		}
+		</style>
+</head>
+
+<body>
+	<h1>picklDEMO - try pickl!</h1>
+  <p>You can execute any Python code. Try out some stuff from <a href="https://github.com/MatthyPlayz/pickle/wiki/Docs">pickl's docs</a> too!</p>
+  <textarea id="code"></textarea><br />
+  <button onclick='evaluatePython()'>Run</button>
+  <br>
+  <br>
+  <div>
+    Output:
+  </div>
+  <textarea id='output' style='width: 100%;' rows='6' disabled></textarea>
+
+  <script>
+    const output = document.getElementById("output");
+    const code = document.getElementById("code");
+
+    function addToOutput(s) {
+      output.value += '>>>' + code.value + '\n' + s + '\n';
+    }
+
+    output.value = 'getting PICKLdemo ready (using pyodide)...\n';
+    // init pyodide
+    languagePluginLoader.then(() => { output.value += 'PICKLdemo via pyodide ready\n\nPlease note that the last argument, o=True/False,\n will not do anything because printing is off \n in Pyodide.\n'; pyodide.runPythonAsync(`
+import math
+def grlpi(amt,prec,o=False):
+  #Gregory-Leibniz
+  c=1
+  p=0
+  for i in range(amt):
+    if(i%2==1):  
+      p-=4/c  
+    else:
+      p+=4/c
+    c+=2
+    if(i%1000==0 and o):
+      print(("iter"+str(i)+" {0:."+str(prec)+"f}").format(p))
+  return p
+
+def nkpi(a,p,o=False):
+  #Nilakantha
+  s=3
+  d=2
+  si=1
+  i=1
+  for k in range(a):
+    s+=si*(4 / (d*(d+1)*(d+2)))
+    if(k%1000==0 and o):
+      print(("iter"+str(k)+" {0:."+str(p)+"f}").format(s))
+    d+=2
+    if si == 1:
+      si=-1
+    else:
+      si=1
+  return s
+def ampi(n,p,o=False):
+  #Archimedes
+  #thanks to https://stackoverflow.com/questions/46594908/archimedes-pi-approximation-in-python for this code <3
+  sides = 4
+  if(n>511):
+    raise ValueError("""No value greater than 511 permitted. 
+    This would crash your system, and Python doesn't allow such a thing.""")
+    return
+  for i in range(n):
+    value = math.pi/180*(360/(2*sides))
+    sinvalue = math.sin(value)
+    PI = sinvalue * sides
+    sides *=4
+    if(i%10==0 and o):
+      print(("iter"+str(i)+" {0:."+str(p)+"f}").format(PI))
+  return PI
+      
+def galpi(n,p,o=False):
+  a = 1
+  b = 1/math.sqrt(2)
+  t = 1/4
+  x = 1
+  for k in range(n):
+    y = a
+    a = (a+b)/2
+    b = math.sqrt(b*y)
+    t = t - x * ((y-a))**2
+    x = 2* x
+    pi = (((a+b))**2)/(4*t)
+    if(k%100==0 and o):
+      print(("iter"+str(k)+" {0:."+str(p)+"f}").format(pi))
+  return pi`
+)});
+
+
+
+
+    function evaluatePython() {
+      pyodide.runPythonAsync(code.value)
+        .then(output => addToOutput(output))
+        .catch((err) => { addToOutput(err) });
+    }
+  </script>
+</body>
+
+</html>
