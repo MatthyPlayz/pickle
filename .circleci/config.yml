@@ -8,8 +8,6 @@ jobs:
     executor: python/default
     steps:
       - checkout
-      - python/load-cache
-      - python/save-cache
       - run:
           command: python ./pickl/tests_circleci.py
           name: Test
