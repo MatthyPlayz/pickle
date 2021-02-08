@@ -1,2 +1,2 @@
-from pickl.tests import *
+from tests import *
 do_tests(1000)
