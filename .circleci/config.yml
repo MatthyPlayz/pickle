@@ -11,7 +11,7 @@ jobs:
       - python/load-cache
       - python/save-cache
       - run:
-          command: ./pickl/tests_circleci.py
+          command: python ./pickl/tests_circleci.py
           name: Test
 
 workflows:
